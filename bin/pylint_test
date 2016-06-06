@@ -20,20 +20,27 @@ def get_global_evaluation(linter):
     except Exception, ex:
         msg = 'An exception occurred while rating: %s' % ex
 
-def run_pylint(module, rcfile=None, ignore=None, min_rating=9.0):
+def run_pylint(modules, rcfile=None, ignore=None, min_rating=9.0, jobs=None):
     "run pylint on the given file"
     from pylint import lint
     from pylint.reporters.text import TextReporter
 
+    if isinstance(modules, basestring):
+        modules = [modules]
+    if isinstance(ignore, basestring):
+        ignore = [ignore]
+
     ARGS = ["-r", "n"]
     if ignore != None:
-        ARGS += ['--ignore='+ignore]
+        ARGS += ['--ignore='+' '.join(ignore)]
     if rcfile:
         ARGS += ['--rcfile', rcfile]
+    if jobs:
+        ARGS += ['--jobs', str(jobs)]
 
     pylint_output = WritableObject()
-    print "##### Linting:", module
-    lintrun = lint.Run([module]+ARGS, reporter=TextReporter(pylint_output), exit=False)
+    print "##### Linting:", ' '.join(modules)
+    lintrun = lint.Run(modules+ARGS, reporter=TextReporter(pylint_output), exit=False)
     for l in pylint_output.read():
         l = l.rstrip()
         if l != "":
@@ -50,13 +57,15 @@ def main():
     default_rcfile = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../pylintrc')
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('module')
-    parser.add_argument('ignore', nargs='?', default=None)
+    parser.add_argument('modules', nargs='+')
+    parser.add_argument('--ignore', nargs='+', default=None)
     parser.add_argument('--min_rating', type=float, default=9.0)
     parser.add_argument('--rcfile', type=str, default=default_rcfile)
+    parser.add_argument('--jobs', type=int, default=None)
     args = parser.parse_args()
 
-    res = run_pylint(args.module, rcfile=args.rcfile, ignore=args.ignore, min_rating=args.min_rating)
+    res = run_pylint(args.modules, rcfile=args.rcfile, ignore=args.ignore,
+                     min_rating=args.min_rating, jobs=args.jobs)
 
     if res:
         sys.exit(0)
