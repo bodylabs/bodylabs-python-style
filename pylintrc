@@ -46,7 +46,9 @@ disable=line-too-long,
         no-member,
         import-error,
         fixme,
-        locally-disabled
+        locally-disabled,
+        len-as-condition, # we don't really honor this one
+        syntax-error # happens when pylint tries to process a build in place .so extension
 # We really do want no-member, but until https://bitbucket.org/logilab/pylint/issue/58/false-positive-no-member-on-numpy-imports is resolved, we get errors with every use of numpy.
 
 [REPORTS]
