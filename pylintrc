@@ -152,6 +152,10 @@ indent-string='    '
 # List of note tags to take in consideration, separated by a comma.
 notes=FIXME,XXX,TODO
 
+# List of decorators that produce context managers. NOTE: This setting is
+# not recognized in pylint 1.5.4 and requires an upgrade (works in 1.7.2). 
+contextmanager-decorators=contextlib.contextmanager,
+        tensorflow.python.util.tf_contextlib.contextmanager
 
 [SIMILARITIES]
 

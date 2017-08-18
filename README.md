@@ -7,7 +7,7 @@ Usage
 
 ```rb
 # make sure this version number is up-to-date
-$style_config_version = '2.0.0'
+$style_config_version = '2.2.0'
 
 desc "Install style config"
 task :install_style_config do
